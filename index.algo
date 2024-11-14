@@ -1,0 +1,198 @@
+// 1. Checking if any two intervals overlap
+
+correction ex1:ALGORITHM intervals_overlap
+VAR
+    intrs : ARRAY_OF type[20][2]; // each line of the matrix is an interval
+    lastTime, i, N : INTEGER;
+    count : ARRAY_OF INTEGER[100];
+    sum : INTEGER := value;
+    isIntersect : BOOLEAN := FALSE;
+BEGIN
+    // we readed N intervals 
+
+    //Find the max end time among all the intervals. Call it lastTime.
+    lastTime := -1;
+    FOR i FROM 0 TO N-1 DO
+        IF (lastTime < intrs[i][1]) THEN   // intrs[i][1] means end of interval
+            lastTime :=  intrs[i][1];
+        END_IF
+    END_FOR
+
+    //Forst the count[] size to be lastTime+1
+    count.length := lastTime +1;
+
+    FOR i FROM 0 TO N-1 DO
+        count[intrs[i][0]] := count[intrs[i][0]] + 1;  // intrs[i][0] start interval
+        count[intrs[i][1]] := count[intrs[i][1]] - 1; 
+    END_FOR
+
+
+
+    /* Once the count[] array is filled, iterate through the count array and 
+    keep adding array values. If any time sum is greater than 1 means there is overlapping 
+    (Notice: If intervals are not overlapping then +1 for start of interval 
+    and -1 for end of the interval so sum becomes 0 if sum is greater than 1 
+    means another interval started before existing interval ends.) */
+
+    FOR i FROM 0 TO count.length -1 DO
+        sum := sum + count[i];
+        IF (sum > 1) THEN
+            isIntersect := TRUE;
+            BREAK;
+        END_IF
+    END_FOR
+
+    IF (isIntersect) THEN
+        Write("Intervals are overlapping");
+    ELSE
+        Write("No intervals overlap");
+    END_IF
+
+
+END
+
+// 2. Find the longest substring with at most K unique characters
+
+Algorithm longest_substring_k_unique(s, k)
+    If length(unique characters in s) < k then
+        Return "Not enough unique character is present in the input string"
+    End If
+    
+    Declare max_len = 0
+    Declare max_substring = ""
+    Declare left = 0
+    Declare char_count as a map with default value 0
+    
+    For right from 0 to length(s) - 1 do
+        char_count[s[right]] = char_count[s[right]] + 1
+        
+        While length(keys in char_count) > k do
+            char_count[s[left]] = char_count[s[left]] - 1
+            If char_count[s[left]] == 0 then
+                Remove s[left] from char_count
+            End If
+            left = left + 1
+        End While
+        
+        If (right - left + 1) > max_len then
+            max_len = right - left + 1
+            max_substring = substring of s from left to right
+        End If
+    End For
+    
+    Return "Longest substring with " + k + " most unique characters is: " + max_substring + " with length " + max_len
+End Algorithm
+
+// 3. Find two elements whose sum is closest to zero
+
+Algorithm closest_to_zero(arr)
+    Sort arr in ascending order
+    Declare left = 0
+    Declare right = length(arr) - 1
+    Declare min_sum = infinity
+    Declare best_pair = (0, 0)
+    
+    While left < right do
+        Declare sum = arr[left] + arr[right]
+        
+        If abs(sum) < abs(min_sum) then
+            min_sum = sum
+            best_pair = (arr[left], arr[right])
+        End If
+        
+        If sum < 0 then
+            left = left + 1
+        Else
+            right = right - 1
+        End If
+    End While
+    
+    Return "Sum close to zero in the given array is: " + min_sum
+End Algorithm
+
+// 4. Count letters, digits, separators, and special characters in a sentence
+
+Function is_separator(d)
+    Return d is in set {' ', ',', '.', ';', ':', '-', '!', '?'}
+End Function
+
+Function is_letter(d)
+    Return d is a letter
+End Function
+
+Function is_digit(d)
+    Return d is a digit
+End Function
+
+Algorithm count_characters()
+    Declare letters = 0
+    Declare digits = 0
+    Declare separators = 0
+    Declare specials = 0
+    
+    While true do
+        Declare d = read next character
+        If d == '#' then
+            Break
+        End If
+        
+        If is_letter(d) then
+            letters = letters + 1
+        Else if is_digit(d) then
+            digits = digits + 1
+        Else if is_separator(d) then
+            separators = separators + 1
+        Else
+            specials = specials + 1
+        End If
+    End While
+    
+    Print "Letters:", letters
+    Print "Digits:", digits
+    Print "Separators:", separators
+    Print "Special characters:", specials
+End Algorithm
+
+// 5. Define a hotel structure and calculate free rooms and clients of a given nationality
+
+Define Structure Room
+    Integer room_number
+    Integer room_type
+    Boolean is_free
+    List of Occupant occupants
+End Structure
+
+Define Structure Occupant
+    Integer id_number
+    String name
+    Integer nationality
+    Integer age
+End Structure
+
+Define Structure Hotel
+    List of Room rooms
+End Structure
+
+Function count_free_rooms(hotel)
+    Declare free_rooms = 0
+    For each room in hotel.rooms do
+        If room.is_free then
+            free_rooms = free_rooms + 1
+        End If
+    End For
+    Return free_rooms
+End Function
+
+Function count_clients_by_nationality(hotel, nationality)
+    Declare count = 0
+    For each room in hotel.rooms do
+        If not room.is_free then
+            For each occupant in room.occupants do
+                If occupant.nationality == nationality then
+                    count = count + 1
+                End If
+            End For
+        End If
+    End For
+    Return count
+End Function
